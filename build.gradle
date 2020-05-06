@@ -1,0 +1,49 @@
+plugins {
+    id 'java'
+//    uncomment the next line to enable building war instead of jar
+//    id 'war'
+    id 'org.springframework.boot' version '2.2.6.RELEASE'
+    id 'io.spring.dependency-management' version "1.0.9.RELEASE"
+    id 'maven-publish'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}
+
+springBoot {
+    buildInfo {
+        properties {
+            name = 'Amazing application name'
+        }
+    }
+}
+
+bootRun {
+    main = 'com.tomgregory.ExampleApplication'
+}
+
+publishing {
+    publications {
+        bootJava(MavenPublication) {
+            artifact bootJar
+        }
+    }
+    repositories {
+        maven {
+            url 'http://localhost:8081/repository/snapshots'
+            credentials {
+                username findProperty('mavenUser')
+                password findProperty('mavenPassword')
+            }
+        }
+    }
+}
